@@ -45,6 +45,21 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  def search_tmdb
+    @search_term = params[:movie]
+    dummy_movie = {
+      title: "Inception",
+      rating: "PG-13",
+      release_date: "July 10, 2010" 
+    }
+    if @search_term[:title] == dummy_movie[:title]
+      @movie_detail = dummy_movie
+    else
+      redirect_to movies_path
+      flash[:notice] = "'#{@search_term[:title]}' was not found in TMDb."
+    end
+  end
+
   private
 
   def force_index_redirect
@@ -66,4 +81,9 @@ class MoviesController < ApplicationController
   def sort_by
     params[:sort_by] || session[:sort_by] || 'id'
   end
+
+  def movie_params
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
+  
 end
